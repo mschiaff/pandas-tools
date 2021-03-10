@@ -1,2 +1,4 @@
 # pandas-tools
-Funciones sobre pandas Data Frames y Series especialmente útiles para aquellos en transición de Excel a Python.
+Funciones básicas sobre pandas Data Frames y Series especialmente útiles para aquellos en transición de Excel a Python.
+
+Las funciones contenidas en el repositorio están diseñadas para ser independientes unas de otras, aunque con la colaboración suficiente no se descarta transformar esto en un package.
