@@ -55,7 +55,10 @@ def _calc_dv(rut: Union[int, str]) -> Union[int, str]:
     # del caso
     return dv
 
-def get_dv(df: DataFrame, rut_field_name: str, dv_field: str="DV") -> DataFrame:
+def get_dv(df: DataFrame, rut_fname: str, dv_fname: str="DV",
+            rut_dv: bool=False, rut_dv_fname: str="RUT_DV",
+            zero_filled: bool=False, with_dot: bool=False) -> DataFrame:
+    
     """
     ## Descripción:
 
@@ -73,13 +76,57 @@ def get_dv(df: DataFrame, rut_field_name: str, dv_field: str="DV") -> DataFrame:
     salida que contendrá los dígitos verificadores de cada correlativo
     de RUT. Por defecto es "DV".
 
+    - rut_dv: Default False. Si es True, crea un campo adicional que
+    concatena el correlativo del RUT con el dígito verificador calculado.
+
+    - rut_dv_fname: Opcional. El nombre que tendrá el campo adicional cuando
+    rut_dv es True. Por defecto es "RUT_DV".
+
+    - zero_filled: Default False. Aplica cuando rut_dv es True. Agrega ceros
+    al principio del correlativo hasta completar 8 caracteres, luego concatena
+    con DV.
+
+    - with_dot: Default False. Aplica cuando rut_dv es True. Agrega puntos
+    como separador de miles al correlativo del RUT, luego concatena con DV.
+    También se puede usar cuadno zero_filles es True.
+
+    ## Consideraciones:
+
+    - Cuando rut_dv es True, independiente del valor que tengan los parámetros
+    zero_filles y with_dot, el nombre del nuevo campo siempre será rut_dv_fname.
+
     ## Retorno:
 
-    Devuelve el mismo DataFrame pasado como parámetro.
+    Devuelve el DataFrame pasado como parámetro.
     """
 
     # Aplica la función _calc_dv al df
-    df[dv_field] = df[rut_field_name].apply(_calc_dv)
+    df[dv_fname] = df[rut_fname].apply(_calc_dv)
 
-    # Devuelve el mismo DataFrame
+    # Si rut_dv es True
+    if rut_dv:
+
+        # Si zero_filles es True
+        if zero_filled:
+
+            # Agrega ceros al principio del correlativo hasta completar 8 caracteres
+            df[rut_dv_fname] = df[rut_fname].apply(lambda row: str(row).zfill(8))
+
+        # Si with_dot es True
+        if with_dot:
+
+            # Aplica punto como separador de miles al correlativo de RUT
+            df[rut_dv_fname] = df[rut_fname].apply(lambda row: "{:,.0f}".format(row).replace(",","."))
+
+        # Crea un campo de nombre rut_dv_fname que concatena el correlativo
+        # de rut con el dv calculado separado por guión ("-")
+        df[rut_dv_fname] = df[rut_fname].map(str) + "-" + df[dv_fname].map(str)
+    
+    # Si rut_dv es False
+    else:
+
+        # No hace nada
+        pass
+
+    # Devuelve el DataFrame
     return df
