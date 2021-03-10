@@ -5,7 +5,7 @@ from typing import Union
 from itertools import cycle
 from pandas import DataFrame
 
-def _calc_dv(rut: Union[int, str]) -> Union[int, str]:
+def calc_dv(rut: Union[int, str]) -> Union[int, str]:
 
     """
     ## Descripción:
@@ -106,7 +106,7 @@ def get_dv(df: DataFrame, rut_fname: str, dv_fname: str="DV",
     """
 
     # Aplica la función _calc_dv al df
-    df[dv_fname] = df[rut_fname].apply(_calc_dv)
+    df[dv_fname] = df[rut_fname].apply(calc_dv)
 
     # Si rut_dv es True
     if rut_dv:
