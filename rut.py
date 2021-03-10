@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from re import sub
 from typing import Union
 from itertools import cycle
 from pandas import DataFrame
@@ -47,7 +48,11 @@ def _calc_dv(rut: Union[int, str]) -> Union[int, str]:
     if dv == 10:
         dv = "K"
     
-    # Si el dv es distinto de 10, entonces se conserva como está
+    # Si el dv es 11, entonces se reemplaza por cero (0)
+    elif dv == 11:
+        dv = 0
+    
+    # Si el dv es distinto de 10 u 11, entonces se conserva como está
     else:
         pass
 
@@ -106,21 +111,23 @@ def get_dv(df: DataFrame, rut_fname: str, dv_fname: str="DV",
     # Si rut_dv es True
     if rut_dv:
 
+        df[rut_dv_fname] = df[rut_fname]
+
         # Si zero_filles es True
         if zero_filled:
 
             # Agrega ceros al principio del correlativo hasta completar 8 caracteres
-            df[rut_dv_fname] = df[rut_fname].apply(lambda row: str(row).zfill(8))
+            df[rut_dv_fname] = df[rut_dv_fname].apply(lambda row: str(row).zfill(8))
 
         # Si with_dot es True
         if with_dot:
 
             # Aplica punto como separador de miles al correlativo de RUT
-            df[rut_dv_fname] = df[rut_fname].apply(lambda row: "{:,.0f}".format(row).replace(",","."))
+            df[rut_dv_fname] = df[rut_dv_fname].apply(lambda row: sub("(\d)(?=(\d{3})+(?!\d))", r"\1.", str(row)))
 
         # Crea un campo de nombre rut_dv_fname que concatena el correlativo
         # de rut con el dv calculado separado por guión ("-")
-        df[rut_dv_fname] = df[rut_fname].map(str) + "-" + df[dv_fname].map(str)
+        df[rut_dv_fname] = df[rut_dv_fname].map(str) + "-" + df[dv_fname].map(str)
     
     # Si rut_dv es False
     else:
