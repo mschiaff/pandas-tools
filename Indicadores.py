@@ -24,6 +24,16 @@ _year : str
     Año presente en formato "yyyy".
 """
 
+__author__ = "Matías Schiaffino Tyrer"
+__contact__ = "matias.scht@gmail.com"
+__date__ = "2021/03/11"
+__deprecated__ = False
+__email__ =  "matias.scht@gmail.com"
+__license__ = "GPLv3"
+__maintainer__ = "Matías Schiaffino Tyrer"
+__status__ = "Desarrollo"
+__version__ = "1.0.0"
+
 #
 #
 #
