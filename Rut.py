@@ -1,26 +1,48 @@
 # -*- coding: utf-8 -*-
 
+"""
+Contiene una colección de funciones para realizar operaciones
+sobre RUT.
+
+## Funciones:
+
+calc_dv : function
+    Calcula el dígito de un único correlativo de RUT.
+
+get_dv : function
+    Calcula el dígito verificador de una serie de correlativos
+    de RUT contenidos en un pandas.DataFrame.
+"""
+
+#
+#
+#
+
 from re import sub
 from typing import Union
 from itertools import cycle
 from pandas import DataFrame
+
+#
+#
+#
 
 def calc_dv(rut: Union[int, str]) -> Union[int, str]:
 
     """
     ## Descripción:
 
-    Función auxiliar que realiza el cálculo del dígito verificador del
-    correlativo de RUT. También se puede usar para cálculos individuales.
+    Calcula el dígito verificador de un correlativo de RUT.
 
     ## Parámetros:
 
-    - rut: int o str con el correlativo de RUT.
+    rut: int, str
+        Correlativo de RUT.
 
     ## Retorno:
 
-    Dígito verificador del correlativo de RUT pasado como parámetro como
-    entero o string, dependiendo del resultado del dígito verificador.
+    int, str
+        Dígito verificador del correlativo de RUT.
     """
 
     # El correlativo de RUT recibido se pasa a una lista de enteros
@@ -60,6 +82,10 @@ def calc_dv(rut: Union[int, str]) -> Union[int, str]:
     # del caso
     return dv
 
+#
+#
+#
+
 def get_dv(df: DataFrame, rut_fname: str, dv_fname: str="DV",
             rut_dv: bool=False, rut_dv_fname: str="RUT_DV",
             zero_filled: bool=False, with_dot: bool=False) -> DataFrame:
@@ -67,33 +93,36 @@ def get_dv(df: DataFrame, rut_fname: str, dv_fname: str="DV",
     """
     ## Descripción:
 
-    Recibe un pandas.DataFrame con un campo que contenga sólo correlativos de
-    RUT y calcula del dígito verificador.
+    Calcula el dígito verificador de correlativos de RUT contenidos en un
+    pandas.DataFrame.
 
     ## Parámetros:
 
-    - df: DataFrame que contiene el campo con correlativos de RUT.
+    df : pandas.DataFrame
+        Contiene los correlativos de RUT.
     
-    - rut_field_name: String con el nombre del campo que contiene
-    los correlativos de RUT en df.
+    rut_field_name : str
+        Nombre del campo que contiene los correlativos de RUT.
     
-    - dv_field: Opcional. El nombre que se quiere para el campo de
-    salida que contendrá los dígitos verificadores de cada correlativo
-    de RUT. Por defecto es "DV".
+    dv_field : str, opcional. Por defecto "DV"
+        Nombre que se quiere para el campo de salida que contendrá los dígitos 
+        verificadores de cada correlativo de RUT.
 
-    - rut_dv: Default False. Si es True, crea un campo adicional que
-    concatena el correlativo del RUT con el dígito verificador calculado.
+    rut_dv : bool, opcional. Por defecto False
+        Si es True, crea un campo adicional que concatena el correlativo del
+        RUT con el dígito verificador calculado.
 
-    - rut_dv_fname: Opcional. El nombre que tendrá el campo adicional cuando
-    rut_dv es True. Por defecto es "RUT_DV".
+    rut_dv_fname : str, opcional. Por defecto "RUT_DV"
+        Nombre que tendrá el campo adicional cuando rut_dv es True.
 
-    - zero_filled: Default False. Aplica cuando rut_dv es True. Agrega ceros
-    al principio del correlativo hasta completar 8 caracteres, luego concatena
-    con DV.
+    zero_filled : bool, opcional. Por defecto False
+        Aplica cuando rut_dv es True. Agrega ceros al principio del correlativo
+        hasta completar 8 caracteres, luego concatena con "DV".
 
-    - with_dot: Default False. Aplica cuando rut_dv es True. Agrega puntos
-    como separador de miles al correlativo del RUT, luego concatena con DV.
-    También se puede usar cuadno zero_filles es True.
+    with_dot : bool, opcional. Por defecto False
+        Aplica cuando rut_dv es True. Agrega puntos como separador de miles al
+        correlativo del RUT, luego concatena con DV. También se puede usar cuadno
+        zero_filles es True.
 
     ## Consideraciones:
 
@@ -102,7 +131,7 @@ def get_dv(df: DataFrame, rut_fname: str, dv_fname: str="DV",
 
     ## Retorno:
 
-    Devuelve el DataFrame pasado como parámetro.
+    pandas.DataFrame
     """
 
     # Aplica la función _calc_dv al df
